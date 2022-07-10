@@ -54,7 +54,8 @@ class Ant {
             this.sniffDistribution = 1.4
             this.lookahead = 0
             // this.dir.rotate(0.05)
-            if (Math.random() < 0.1) this.findingDirection = false
+            if (Math.random() < config.findingDirectionChance)
+                this.findingDirection = false
         } else {
             this.sniffDistribution = config.sniffDistribution
             this.lookahead = config.lookahead
@@ -87,10 +88,10 @@ class Ant {
             }
         }
 
-        const vel = this.dir.copy().setMag(16 * this.speed)
+        const vel = this.dir.copy().setMag(delta * this.speed)
         this.pos.add(vel)
 
-        this.constrainOnMap()
+        this.constrainOnMapBounce()
     }
 
     sniff() {
@@ -151,6 +152,24 @@ class Ant {
         const homeX = Math.floor(this.colony.pos.x)
         const homeY = Math.floor(this.colony.pos.y)
         return x === homeX && y === homeY
+    }
+
+    constrainOnMapBounce() {
+        if (this.pos.x >= config.width) {
+            this.pos.x = config.width - 1
+            this.dir.x = -this.dir.x
+        } else if (this.pos.x < 0) {
+            this.pos.x = 1
+            this.dir.x = -this.dir.x
+        }
+
+        if (this.pos.y >= config.height) {
+            this.pos.y = config.height - 1
+            this.dir.y = -this.dir.y
+        } else if (this.pos.y < 0) {
+            this.pos.y = 1
+            this.dir.y = -this.dir.y
+        }
     }
 
     constrainOnMap() {
